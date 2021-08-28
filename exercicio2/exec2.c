@@ -68,7 +68,6 @@ char* insertName(char* list) {
     strcat(list, ",");
     strcat(list, newName);
   }
-  printf("List size: %lu", strlen(list));
 
   strcat(list, "\0");
   printf("\nList: %s\n", list);
@@ -80,13 +79,15 @@ void listName(char* list) {
   if (strlen(list) > 0) {
     printf("\nList names: %s", list);
   } else {
-    printf("\nA lista encontra-se vazia");
+    printf("\n*****************************");
+    printf("\n* A lista encontra-se vazia *");
+    printf("\n*****************************");
   }
 }
 
 char* removeName(char* list) {
   char nameToBeRemoved[20];
-  int removeStart, newListSize;
+  int removeStart, newListSize, i, k;
 
   printf("\nInforme o nome a ser deletado (máx 20 caracteres): ");
   scanf("%s", nameToBeRemoved);
@@ -98,17 +99,22 @@ char* removeName(char* list) {
     char* isLastName = strstr(nameToBeRemovedIndex, ",");
 
     if (isLastName != NULL) {
-      list = realloc(list, (removeStart) * sizeof(char));
-      list[removeStart - 1] = '\0';
-      newListSize = strlen(list) + strlen(isLastName);
-      printf("\n%d", newListSize);
-      list = realloc(list, (newListSize) * sizeof(char));
-      strcat(list, isLastName);
+      removeStart = strlen(list) - strlen(nameToBeRemovedIndex);
+
+      for (k = 0; k < strlen(nameToBeRemoved) + 1; k++) {
+        for (i = 0; i < strlen(nameToBeRemovedIndex); i++) {
+          list[removeStart + i] = list[removeStart + i + 1];
+        }
+      }
+      printf("Tamanho da lista: %lu", strlen(list));
+
+      list = realloc(list, (strlen(list) + 1) * sizeof(char));
       strcat(list, "\0");
 
     } else {
-      newListSize = strlen(list) - strlen(nameToBeRemovedIndex);
-      list = realloc(list, (newListSize) * sizeof(char));
+      newListSize = strlen(list) - strlen(nameToBeRemoved);
+      printf("newLisSize: %d", newListSize);
+      list = realloc(list, (newListSize + 1) * sizeof(char));
       list[newListSize - 1] = '\0';
     }
   } else {
