@@ -79,3 +79,32 @@ char* insertName(char* list) {
 void listName(char* list) {
   printf("\nList names: %s", list);
 }
+
+char* removeName(char* list) {
+  char nameToBeRemoved[20];
+  int auxIndex;
+
+  printf("\nInforme o nome a ser deletado (máx 20 caracteres): ");
+  scanf("%s", nameToBeRemoved);
+
+  char* nameToBeRemovedIndex = strstr(list, nameToBeRemoved);
+
+  if (nameToBeRemovedIndex != NULL) {
+    auxIndex = strlen(list) - strlen(nameToBeRemovedIndex);
+    char* isLastName = strstr(nameToBeRemovedIndex, ",");
+
+    if (isLastName != NULL) {
+      list = realloc(list, (auxIndex + 1) * sizeof(char));
+      list[auxIndex - 1] = '\0';
+
+      printf("\nList1: %lu", strlen(list));
+      strcat(list, isLastName);
+      printf("\nList2: %lu", strlen(list));
+      list = realloc(list, (strlen(list)) * sizeof(char));
+
+      printf("\nList: %s \n", list);
+    }
+  }
+
+  return list;
+}
