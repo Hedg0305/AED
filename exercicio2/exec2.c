@@ -39,7 +39,7 @@ int main() {
 int menu() {
   int option = 0;
   while (option < 1 || option > 4) {
-    printf("\n____________________");
+    printf("_____________________");
     printf("\n|Escolha uma opção: |");
     printf("\n|1- Inserir um nome |");
     printf("\n|2- Excluir um nome |");
@@ -77,7 +77,7 @@ char* insertName(char* list) {
 
 void listName(char* list) {
   if (strlen(list) > 0) {
-    printf("\nList names: %s", list);
+    printf("\nList names: %s\n", list);
   } else {
     printf("\n*****************************");
     printf("\n* A lista encontra-se vazia *");
@@ -98,25 +98,34 @@ char* removeName(char* list) {
     removeStart = strlen(list) - strlen(nameToBeRemovedIndex);
     char* isLastName = strstr(nameToBeRemovedIndex, ",");
 
-    if (isLastName != NULL) {
-      removeStart = strlen(list) - strlen(nameToBeRemovedIndex);
+    // if (isLastName != NULL) {
+    removeStart = strlen(list) - strlen(nameToBeRemovedIndex);
 
-      for (k = 0; k < strlen(nameToBeRemoved) + 1; k++) {
-        for (i = 0; i < strlen(nameToBeRemovedIndex); i++) {
-          list[removeStart + i] = list[removeStart + i + 1];
-        }
-      }
-      printf("Tamanho da lista: %lu", strlen(list));
-
-      list = realloc(list, (strlen(list) + 1) * sizeof(char));
-      strcat(list, "\0");
-
-    } else {
-      newListSize = strlen(list) - strlen(nameToBeRemoved);
-      printf("newLisSize: %d", newListSize);
-      list = realloc(list, (newListSize + 1) * sizeof(char));
-      list[newListSize - 1] = '\0';
+    if (list[removeStart - 1] == ',') {
+      removeStart--;
+      nameToBeRemovedIndex--;
     }
+
+    for (k = 0; k < strlen(nameToBeRemoved) + 1; k++) {
+      for (i = 0; i < strlen(nameToBeRemovedIndex); i++) {
+        list[removeStart + i] = list[removeStart + i + 1];
+      }
+    }
+
+    list = realloc(list, (strlen(list) + 1) * sizeof(char));
+    strcat(list, "\0");
+
+    printf("\nList: %s\n", list);
+
+    // } else {
+    //   newListSize = strlen(list) - strlen(nameToBeRemoved);
+    //   printf("newLisSize: %d", newListSize);
+    //   list = realloc(list, (newListSize + 1) * sizeof(char));
+    //   if (newListSize == 0)
+    //     list[newListSize] = '\0';
+    //   else
+    //     list[newListSize - 1] = '\0';
+    // }
   } else {
     printf("\n***********************");
     printf("\n* Nome não encontrado *");
