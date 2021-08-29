@@ -5,7 +5,7 @@
 int menu();
 char* insertName(char* list);
 char* removeName(char* list);
-void listName(char* list);
+void listNames(char* list);
 
 int main() {
   int option;
@@ -24,31 +24,32 @@ int main() {
         list = removeName(list);
         break;
       case 3:
-        listName(list);
+        listNames(list);
         break;
       case 4:
         free(list);
         exit(0);
         break;
+      default:
+        printf("Opção inválida!!\n");
     }
   }
 
   return 0;
 }
-
 int menu() {
   int option = 0;
-  while (option < 1 || option > 4) {
-    printf("_____________________");
-    printf("\n|Escolha uma opção: |");
-    printf("\n|1- Inserir um nome |");
-    printf("\n|2- Excluir um nome |");
-    printf("\n|3- Listar nomes:   |");
-    printf("\n|4- Sair:           |\n");
-    printf("---------------------");
-    printf("\n|Opcao: ");
-    scanf("%d", &option);
-  }
+
+  printf("_____________________");
+  printf("\n|Escolha uma opção: |");
+  printf("\n|1- Inserir um nome |");
+  printf("\n|2- Excluir um nome |");
+  printf("\n|3- Listar nomes:   |");
+  printf("\n|4- Sair:           |\n");
+  printf("---------------------");
+  printf("\n|Opcao: ");
+  scanf("%d", &option);
+
   return option;
 }
 
@@ -70,18 +71,18 @@ char* insertName(char* list) {
   }
 
   strcat(list, "\0");
-  printf("\nList: %s\n", list);
+  listNames(list);
 
   return list;
 }
 
-void listName(char* list) {
+void listNames(char* list) {
   if (strlen(list) > 0) {
     printf("\nList names: %s\n", list);
   } else {
     printf("\n*****************************");
     printf("\n* A lista encontra-se vazia *");
-    printf("\n*****************************");
+    printf("\n*****************************\n");
   }
 }
 
@@ -98,10 +99,9 @@ char* removeName(char* list) {
     removeStart = strlen(list) - strlen(nameToBeRemovedIndex);
     char* isLastName = strstr(nameToBeRemovedIndex, ",");
 
-    // if (isLastName != NULL) {
     removeStart = strlen(list) - strlen(nameToBeRemovedIndex);
 
-    if (list[removeStart - 1] == ',') {
+    if (removeStart != 0 && list[removeStart - 1] == ',') {
       removeStart--;
       nameToBeRemovedIndex--;
     }
@@ -115,21 +115,12 @@ char* removeName(char* list) {
     list = realloc(list, (strlen(list) + 1) * sizeof(char));
     strcat(list, "\0");
 
-    printf("\nList: %s\n", list);
+    listNames(list);
 
-    // } else {
-    //   newListSize = strlen(list) - strlen(nameToBeRemoved);
-    //   printf("newLisSize: %d", newListSize);
-    //   list = realloc(list, (newListSize + 1) * sizeof(char));
-    //   if (newListSize == 0)
-    //     list[newListSize] = '\0';
-    //   else
-    //     list[newListSize - 1] = '\0';
-    // }
   } else {
     printf("\n***********************");
     printf("\n* Nome não encontrado *");
-    printf("\n***********************");
+    printf("\n***********************\n");
   }
 
   return list;
