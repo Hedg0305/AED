@@ -71,7 +71,7 @@ void menu(void *pBuffer) {
 void addPerson(void *pBuffer) {
   int *counter = &*(int *)(pBuffer + PERSON_COUNTER);
 
-  if (*counter == 2) {
+  if (*counter == 3) {
     printf("Lista cheia\n");
   } else {
     printf("Nome: ");
@@ -132,12 +132,13 @@ void removePerson(void *pBuffer) {
       if (strcmp(name, pessoa[*counter].nome) == 0) {
         *flag = 1;
       }
-      if (*flag = 1) {
+      if (*flag == 1) {
         strcpy(pessoa[*counter].nome, pessoa[*counter + 1].nome);
         pessoa[*counter].idade = pessoa[*counter + 1].idade;
         pessoa[*counter].altura = pessoa[*counter + 1].altura;
       }
     }
+
     if (*flag == 1) {
       *personCounter -= 1;
     }
