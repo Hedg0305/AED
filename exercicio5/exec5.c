@@ -38,7 +38,7 @@ int main() {
       contador++;
     }
   }
-  printf("\n%d", contador);
+
   for (i = 0; i <= contador; i++) {
     printf("\nNome: %s", buffer[i].nome);
     printf("\nIdade: %d", buffer[i].idade);
