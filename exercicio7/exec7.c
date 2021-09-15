@@ -71,7 +71,7 @@ void menu(void *pBuffer) {
 void addPerson(void *pBuffer) {
   int *counter = &*(int *)(pBuffer + PERSON_COUNTER);
 
-  if (*counter == 3) {
+  if (*counter == 10) {
     printf("Lista cheia\n");
   } else {
     printf("Nome: ");
