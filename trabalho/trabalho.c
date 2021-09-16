@@ -6,12 +6,12 @@ void addPerson(void *pBuffer);
 void menu(void *pBuffer);
 void list(void *pBuffer);
 void search(void *pBuffer);
+void sort(void *pBuffer, void *person);
 
 #define OPTION 0
-#define COUNTER (sizeof(int))
-#define FIRST_PERSON (sizeof(int) * 2)
-#define LAST_PERSON (sizeof(int) * 2 + sizeof(void *))
-#define SEARCH_NAME (sizeof(int) * 2 + sizeof(void *) * 2)
+#define FIRST_PERSON (sizeof(int))
+#define LAST_PERSON (sizeof(int) + sizeof(void *))
+#define SEARCH_NAME (sizeof(int) + sizeof(void *) * 2)
 
 #define NAME 0
 #define AGE (sizeof(char) * 10)
@@ -22,7 +22,9 @@ void search(void *pBuffer);
 int main() {
   void *pBuffer = (void *)malloc((sizeof(int) * 2) + sizeof(void *) * 2 + (sizeof(char) * 11));
   //Ordem: Contador - FP - LP
-  *(int *)(pBuffer + COUNTER) = 0;
+  *(void **)(pBuffer + FIRST_PERSON) == NULL;
+  *(void **)(pBuffer + LAST_PERSON) == NULL;
+
   while (1) {
     menu(pBuffer);
 
@@ -66,8 +68,6 @@ void menu(void *pBuffer) {
 }
 
 void addPerson(void *pBuffer) {
-  int *counter = &*(int *)(pBuffer + COUNTER);
-
   void *person = malloc(sizeof(char) * 10 + sizeof(int) * 2 + sizeof(void *) * 2);
 
   printf("Insira um nome: ");
@@ -77,16 +77,13 @@ void addPerson(void *pBuffer) {
   printf("Insira um telefone: ");
   scanf("%d", (int *)(person + TELEPHONE));
   *(void **)(person + NEXT_PERSON) == NULL;
+  *(void **)(person + PREVIOUS_PERSON) == NULL;
 
-  if (*counter == 0) {
+  if (*(void **)(pBuffer + FIRST_PERSON) == NULL) {
     *(void **)(pBuffer + FIRST_PERSON) = person;
     *(void **)(pBuffer + LAST_PERSON) = person;
-    *counter += 1;
   } else {
-    void *currentLastPerson = *(void **)(pBuffer + LAST_PERSON);
-    *(void **)(currentLastPerson + NEXT_PERSON) = person;
-    *(void **)(pBuffer + LAST_PERSON) = person;
-    *counter += 1;
+    sort(person, pBuffer);
   }
 }
 
@@ -96,8 +93,17 @@ void list(void *pBuffer) {
   while (person != NULL) {
     printf("\nNome : %s", (char *)(person + NAME));
     printf("\nIdade : %d", *(int *)(person + AGE));
-    printf("\nTelefone : %d", *(int *)(person + TELEPHONE));
+    printf("\nTelefone : %d\n", *(int *)(person + TELEPHONE));
     person = *(void **)(person + NEXT_PERSON);
+  }
+  printf("\n\nTESTING INVERSE LINKS:\n");
+  person = *(void **)(pBuffer + LAST_PERSON);
+
+  while (person != NULL) {
+    printf("\nNome : %s", (char *)(person + NAME));
+    printf("\nIdade : %d", *(int *)(person + AGE));
+    printf("\nTelefone : %d\n", *(int *)(person + TELEPHONE));
+    person = *(void **)(person + PREVIOUS_PERSON);
   }
 }
 
@@ -107,14 +113,48 @@ void search(void *pBuffer) {
 
   printf("Name to be searched :");
   scanf("%s", person);
-  printf("Name to be searched %s:", (char *)(auxPerson + NAME));
 
   while (auxPerson != NULL) {
     if (strcmp(person, (char *)(auxPerson + NAME)) == 0) {
       printf("\nNome : %s", (char *)(auxPerson + NAME));
       printf("\nIdade : %d", *(int *)(auxPerson + AGE));
-      printf("\nTelefone : %d", *(int *)(auxPerson + TELEPHONE));
+      printf("\nTelefone : %d\n", *(int *)(auxPerson + TELEPHONE));
+
+      return;
     }
     auxPerson = *(void **)(auxPerson + NEXT_PERSON);
+  }
+}
+
+void sort(void *person, void *pBuffer) {
+  void *auxPerson = *(void **)(pBuffer + LAST_PERSON);
+
+  *(void **)(person + PREVIOUS_PERSON) = NULL;
+  *(void **)(person + NEXT_PERSON) = NULL;
+
+  if (strcmp((char *)(auxPerson + NAME), (char *)(person + NAME)) <= 0) {
+    *(void **)(person + PREVIOUS_PERSON) = *(void **)(pBuffer + LAST_PERSON);
+    void *auxPerson = *(void **)(pBuffer + LAST_PERSON);
+    *(void **)(pBuffer + LAST_PERSON) = person;
+    *(void **)(auxPerson + NEXT_PERSON) = person;
+    return;
+  } else {
+    while (auxPerson != NULL) {
+      if (strcmp((char *)(auxPerson + NAME), (char *)(person + NAME)) <= 0) {
+        *(void **)(person + NEXT_PERSON) = *(void **)(auxPerson + NEXT_PERSON);
+        *(void **)(person + PREVIOUS_PERSON) = auxPerson;
+        void *tempPersom = *(void **)(auxPerson + NEXT_PERSON);
+        *(void **)(tempPersom + PREVIOUS_PERSON) = person;
+        *(void **)(auxPerson + NEXT_PERSON) = person;
+
+        return;
+      }
+      auxPerson = *(void **)(auxPerson + PREVIOUS_PERSON);
+    }
+
+    *(void **)(person + NEXT_PERSON) = *(void **)(pBuffer + FIRST_PERSON);
+    auxPerson = *(void **)(pBuffer + FIRST_PERSON);
+    *(void **)(auxPerson + PREVIOUS_PERSON) = person;
+    *(void **)(pBuffer + FIRST_PERSON) = person;
   }
 }
