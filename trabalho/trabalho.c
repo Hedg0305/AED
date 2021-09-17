@@ -12,7 +12,7 @@ void RESET(void *pBuffer);
 
 #define OPTION 0
 #define FIRST_PERSON (sizeof(int))
-#define LAST_PERSON (sizeof(int) + sizeof(void *))
+#define LAST_PERSON (sizeof(int) + sizeof(void **))
 #define SEARCH_NAME (sizeof(int) + sizeof(void *) * 2)
 
 #define NAME 0
@@ -23,6 +23,7 @@ void RESET(void *pBuffer);
 
 int main() {
   void *pBuffer = (void *)malloc((sizeof(int) * 2) + sizeof(void *) * 2 + (sizeof(char) * 11));
+  memset(pBuffer, 0, (sizeof(int) * 2) + sizeof(void *) * 2 + (sizeof(char) * 11));
   //Ordem: Contador - FP - LP
   *(void **)(pBuffer + FIRST_PERSON) == NULL;
   *(void **)(pBuffer + LAST_PERSON) == NULL;
@@ -70,14 +71,26 @@ void menu(void *pBuffer) {
 }
 
 void addPerson(void *pBuffer) {
-  void *person = malloc (sizeof(char) * 11 + sizeof(int) * 2 + sizeof(void *) * 2);
+  void *person = (void *)malloc(sizeof(char) * 11 + sizeof(int) * 2 + sizeof(void *) * 2);
+  memset(person, 0, (sizeof(char) * 11 + sizeof(int) * 2 + sizeof(void *) * 2));
 
   printf("Insira um nome: ");
   scanf("%s", (char *)((person + NAME)));
+
+  while (strlen((char *)((person + NAME))) > 10) {
+    printf("*********************************************** \n");
+    printf("* Insira um nome com no máximo 10 caracteres! *\n");
+    printf("*********************************************** \n");
+    printf("Insira um nome: ");
+    scanf("%s", (char *)((person + NAME)));
+  }
+
   printf("Insira a idade: ");
   scanf("%d", (int *)(person + AGE));
+
   printf("Insira um telefone: ");
   scanf("%d", (int *)(person + TELEPHONE));
+
   *(void **)(person + NEXT_PERSON) == NULL;
   *(void **)(person + PREVIOUS_PERSON) == NULL;
 
