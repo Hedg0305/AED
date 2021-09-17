@@ -26,8 +26,8 @@ int main() {
 
   memset(pBuffer, 0, (sizeof(int) + (sizeof(void *) * 2) + (sizeof(char) * 11)));
   //Ordem: Contador - FP - LP
-  *(void **)(pBuffer + FIRST_PERSON) == NULL;
-  *(void **)(pBuffer + LAST_PERSON) == NULL;
+  *(void **)(pBuffer + FIRST_PERSON) = NULL;
+  *(void **)(pBuffer + LAST_PERSON) = NULL;
 
   while (1) {
     setbuf(stdin, NULL);
@@ -98,8 +98,8 @@ void addPerson(void *pBuffer) {
   scanf("%d", (int *)(person + TELEPHONE));
   setbuf(stdin, NULL);
 
-  *(void **)(person + NEXT_PERSON) == NULL;
-  *(void **)(person + PREVIOUS_PERSON) == NULL;
+  *(void **)(person + NEXT_PERSON) = NULL;
+  *(void **)(person + PREVIOUS_PERSON) = NULL;
 
   if (*(void **)(pBuffer + FIRST_PERSON) == NULL) {
     *(void **)(pBuffer + FIRST_PERSON) = person;
