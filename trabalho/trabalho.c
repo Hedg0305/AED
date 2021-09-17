@@ -22,16 +22,18 @@ void RESET(void *pBuffer);
 #define NEXT_PERSON (sizeof(char) * 11 + sizeof(int) * 2 + sizeof(void *))
 
 int main() {
-  void *pBuffer = (void *)malloc((sizeof(int) * 2) + sizeof(void *) * 2 + (sizeof(char) * 11));
-  memset(pBuffer, 0, (sizeof(int) * 2) + sizeof(void *) * 2 + (sizeof(char) * 11));
+  void *pBuffer = (void *)malloc(sizeof(int) + sizeof(void *) * 2 + (sizeof(char) * 11));
+
+  memset(pBuffer, 0, (sizeof(int) + (sizeof(void *) * 2) + (sizeof(char) * 11)));
   //Ordem: Contador - FP - LP
   *(void **)(pBuffer + FIRST_PERSON) == NULL;
   *(void **)(pBuffer + LAST_PERSON) == NULL;
 
   while (1) {
+    setbuf(stdin, NULL);
     menu(pBuffer);
 
-    switch (*(int *)pBuffer) {
+    switch (*(int *)(pBuffer + OPTION)) {
       case 1:
         addPerson(pBuffer);
         break;
@@ -72,10 +74,12 @@ void menu(void *pBuffer) {
 
 void addPerson(void *pBuffer) {
   void *person = (void *)malloc(sizeof(char) * 11 + sizeof(int) * 2 + sizeof(void *) * 2);
+
   memset(person, 0, (sizeof(char) * 11 + sizeof(int) * 2 + sizeof(void *) * 2));
 
   printf("Insira um nome: ");
   scanf("%s", (char *)((person + NAME)));
+  setbuf(stdin, NULL);
 
   while (strlen((char *)((person + NAME))) > 10) {
     printf("*********************************************** \n");
@@ -83,13 +87,16 @@ void addPerson(void *pBuffer) {
     printf("*********************************************** \n");
     printf("Insira um nome: ");
     scanf("%s", (char *)((person + NAME)));
+    setbuf(stdin, NULL);
   }
 
   printf("Insira a idade: ");
   scanf("%d", (int *)(person + AGE));
+  setbuf(stdin, NULL);
 
   printf("Insira um telefone: ");
   scanf("%d", (int *)(person + TELEPHONE));
+  setbuf(stdin, NULL);
 
   *(void **)(person + NEXT_PERSON) == NULL;
   *(void **)(person + PREVIOUS_PERSON) == NULL;
@@ -133,16 +140,32 @@ void POP(void *pBuffer) {
   }
 }
 
-void RESET(void *pBuffer) {
-  void *person = *(void **)(pBuffer + FIRST_PERSON);
-  void *auxPerson;
+void search(void *pBuffer) {
+  char *person = &*(char *)(pBuffer + SEARCH_NAME);
+  void *auxPerson = *(void **)(pBuffer + FIRST_PERSON);
 
-  while (person != NULL) {
-    auxPerson = *(void **)(person + NEXT_PERSON);
-    free(person);
-    person = auxPerson;
+  if (auxPerson == NULL) {
+    printf("A lista encontra-se vazia!\n");
+    return;
   }
-  free(pBuffer);
+
+  printf("Name to be searched :");
+  scanf("%s", person);
+  setbuf(stdin, NULL);
+
+  while (auxPerson != NULL) {
+    if (strcmp(person, (char *)(auxPerson + NAME)) == 0) {
+      printf("Nome encontrado:");
+      printf("\n\tNome : %s", (char *)(auxPerson + NAME));
+      printf("\n\tIdade : %d", *(int *)(auxPerson + AGE));
+      printf("\n\tTelefone : %d\n", *(int *)(auxPerson + TELEPHONE));
+
+      return;
+    }
+    auxPerson = *(void **)(auxPerson + NEXT_PERSON);
+  }
+
+  printf("Nome não encontrado\n");
 }
 
 void list(void *pBuffer) {
@@ -160,23 +183,16 @@ void list(void *pBuffer) {
   }
 }
 
-void search(void *pBuffer) {
-  char *person = &*(char *)(pBuffer + SEARCH_NAME);
-  void *auxPerson = *(void **)(pBuffer + FIRST_PERSON);
+void RESET(void *pBuffer) {
+  void *person = *(void **)(pBuffer + FIRST_PERSON);
+  void *auxPerson;
 
-  printf("Name to be searched :");
-  scanf("%s", person);
-
-  while (auxPerson != NULL) {
-    if (strcmp(person, (char *)(auxPerson + NAME)) == 0) {
-      printf("\nNome : %s", (char *)(auxPerson + NAME));
-      printf("\nIdade : %d", *(int *)(auxPerson + AGE));
-      printf("\nTelefone : %d\n", *(int *)(auxPerson + TELEPHONE));
-
-      return;
-    }
-    auxPerson = *(void **)(auxPerson + NEXT_PERSON);
+  while (person != NULL) {
+    auxPerson = *(void **)(person + NEXT_PERSON);
+    free(person);
+    person = auxPerson;
   }
+  free(pBuffer);
 }
 
 void sort(void *person, void *pBuffer) {
