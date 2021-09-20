@@ -24,7 +24,6 @@ void RESET(void *pBuffer);
 int main() {
   void *pBuffer = (void *)malloc(sizeof(int) + sizeof(void *) * 2 + (sizeof(char) * 11));
 
-  memset(pBuffer, 0, (sizeof(int) + (sizeof(void *) * 2) + (sizeof(char) * 11)));
   //Ordem: Contador - FP - LP
   *(void **)(pBuffer + FIRST_PERSON) = NULL;
   *(void **)(pBuffer + LAST_PERSON) = NULL;
@@ -74,8 +73,6 @@ void menu(void *pBuffer) {
 
 void addPerson(void *pBuffer) {
   void *person = (void *)malloc(sizeof(char) * 11 + sizeof(int) * 2 + sizeof(void *) * 2);
-
-  memset(person, 0, (sizeof(char) * 11 + sizeof(int) * 2 + sizeof(void *) * 2));
 
   printf("Insira um nome: ");
   scanf("%s", (char *)((person + NAME)));
@@ -130,9 +127,9 @@ void POP(void *pBuffer) {
 
   } else {
     printf("Pessoa removida: ");
-    printf("\nNome : %s", (char *)(person + NAME));
-    printf("\nIdade : %d", *(int *)(person + AGE));
-    printf("\nTelefone : %d\n", *(int *)(person + TELEPHONE));
+    printf("\n\tNome : %s", (char *)(person + NAME));
+    printf("\n\tIdade : %d", *(int *)(person + AGE));
+    printf("\n\tTelefone : %d\n", *(int *)(person + TELEPHONE));
     free(person);
     *(void **)(pBuffer + FIRST_PERSON) = NULL;
     *(void **)(pBuffer + LAST_PERSON) = NULL;
