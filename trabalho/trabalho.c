@@ -29,7 +29,6 @@ int main() {
   *(void **)(pBuffer + LAST_PERSON) = NULL;
 
   while (1) {
-    setbuf(stdin, NULL);
     menu(pBuffer);
 
     switch (*(int *)(pBuffer + OPTION)) {
@@ -68,7 +67,6 @@ void menu(void *pBuffer) {
   printf("\n---------------------");
   printf("\n|Opcao: ");
   scanf("%d", &*(int *)(pBuffer + OPTION));
-  setbuf(stdin, NULL);
 }
 
 void addPerson(void *pBuffer) {
@@ -76,7 +74,6 @@ void addPerson(void *pBuffer) {
 
   printf("Insira um nome: ");
   scanf("%s", (char *)((person + NAME)));
-  setbuf(stdin, NULL);
 
   while (strlen((char *)((person + NAME))) > 10) {
     printf("*********************************************** \n");
@@ -84,16 +81,13 @@ void addPerson(void *pBuffer) {
     printf("*********************************************** \n");
     printf("Insira um nome: ");
     scanf("%s", (char *)((person + NAME)));
-    setbuf(stdin, NULL);
   }
 
   printf("Insira a idade: ");
   scanf("%d", (int *)(person + AGE));
-  setbuf(stdin, NULL);
 
   printf("Insira um telefone: ");
   scanf("%d", (int *)(person + TELEPHONE));
-  setbuf(stdin, NULL);
 
   *(void **)(person + NEXT_PERSON) = NULL;
   *(void **)(person + PREVIOUS_PERSON) = NULL;
@@ -120,9 +114,9 @@ void POP(void *pBuffer) {
     *(void **)(auxPerson + PREVIOUS_PERSON) = NULL;
 
     printf("Pessoa removida: ");
-    printf("\nNome : %s", (char *)(person + NAME));
-    printf("\nIdade : %d", *(int *)(person + AGE));
-    printf("\nTelefone : %d\n", *(int *)(person + TELEPHONE));
+    printf("\n\tNome : %s", (char *)(person + NAME));
+    printf("\n\tIdade : %d", *(int *)(person + AGE));
+    printf("\n\tTelefone : %d\n", *(int *)(person + TELEPHONE));
     free(person);
 
   } else {
@@ -148,7 +142,6 @@ void search(void *pBuffer) {
 
   printf("Name to be searched :");
   scanf("%s", person);
-  setbuf(stdin, NULL);
 
   while (auxPerson != NULL) {
     if (strcmp(person, (char *)(auxPerson + NAME)) == 0) {
@@ -173,9 +166,9 @@ void list(void *pBuffer) {
   }
 
   while (person != NULL) {
-    printf("\nNome : %s", (char *)(person + NAME));
-    printf("\nIdade : %d", *(int *)(person + AGE));
-    printf("\nTelefone : %d\n", *(int *)(person + TELEPHONE));
+    printf("\n\tNome : %s", (char *)(person + NAME));
+    printf("\n\tIdade : %d", *(int *)(person + AGE));
+    printf("\n\tTelefone : %d\n", *(int *)(person + TELEPHONE));
     person = *(void **)(person + NEXT_PERSON);
   }
 }
